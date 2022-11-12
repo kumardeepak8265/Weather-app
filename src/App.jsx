@@ -8,6 +8,7 @@ import Search from "./Search";
 function App() {
   const [search, setSearch] = useState("");
   const [Weather, setWeather] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (event) => {
     setSearch(event.target.value);
@@ -16,23 +17,22 @@ function App() {
   const WeatherApi = () => {
     axios
       .get(
-        "https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=061602ffb426fc9a2f8cb137ac8b452c"
+        `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=061602ffb426fc9a2f8cb137ac8b452c`
       )
       .then((res) => {
         setWeather(res.data);
       })
       .catch((error) => {
-        console.log("error", error);
+        setError(error.response.data.message);
       });
   };
 
   return (
-    <div className="flex  flex-col h-screen px-20 ">
+    <div className="flex  flex-col h-screen sm:px-20 px-2">
       <div className=" h-1/10  ">
         <NavBar></NavBar>
       </div>
-
-      <div className=" flex flex-col bg-gray-100 h-4/5">
+      <div className=" flex flex-col bg-no-repeat bg-cover bg-[url('https://cdn.discordapp.com/attachments/943172350139052092/1040983865839337522/2560px-Clouds_Blue_Sky_001.jpg')] h-4/5">
         <Search
           value={search}
           onChange={handleChange}
@@ -40,8 +40,11 @@ function App() {
         ></Search>
         {Weather && <Result Weather={Weather}></Result>}
         {!Weather && (
-          <div className="text-red-500 text-4xl px-4">Loading...</div>
+          <h1 className="flex justify-center text-2xl px-4 font-bold   ">
+            select a city
+          </h1>
         )}
+        {error && <h1 className="px-4">{error}</h1>}
       </div>
       <div>
         <Footer className="h-1/10"></Footer>
